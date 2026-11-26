@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.github
+.env
+.env.*
+!.env.example
+data
+coverage
+test-results
+playwright-report
+*.db
+*.db-shm
+*.db-wal
+tsconfig.tsbuildinfo
+backups
+public/uploads/marhaba
