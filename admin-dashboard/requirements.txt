@@ -1,0 +1,6 @@
+dash==3.0.4
+dash-auth==2.3.0
+plotly==6.0.1
+pandas==2.2.3
+requests==2.32.3
+gunicorn==23.0.0
