@@ -1,0 +1,75 @@
+{
+  "id": "/",
+  "name": "MARHABA — Morocco Travel Marketplace",
+  "short_name": "MARHABA",
+  "description": "Book verified riads, hotels, cars, restaurants, trains, buses, flights, eSIM & AI trip plans across Morocco.",
+  "lang": "en",
+  "dir": "auto",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#faf8f4",
+  "theme_color": "#2148c8",
+  "orientation": "any",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/brand/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/brand/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Stays & Cars",
+      "short_name": "Explore",
+      "url": "/search",
+      "icons": [{ "src": "/brand/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Flights, Trains & eSIM",
+      "short_name": "Services",
+      "url": "/services",
+      "icons": [{ "src": "/brand/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Morocco 5G eSIM",
+      "short_name": "eSIM",
+      "url": "/esim",
+      "icons": [{ "src": "/brand/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "AI Trip Planner",
+      "short_name": "Planner",
+      "url": "/planner",
+      "icons": [{ "src": "/brand/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Offline SOS & Guide",
+      "short_name": "SOS",
+      "url": "/offline",
+      "icons": [{ "src": "/brand/app-icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
