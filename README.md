@@ -75,3 +75,12 @@ npm run start
 - Passwords hashed with Node `crypto.scrypt` + per-user salt; HTTP-only HMAC-SHA256 cookies.
 - No fake live airline, train, or eSIM provider confirmations; all external requests begin as `pending_quote` or `pending_provider`.
 - Sandbox payment processing is explicitly labeled as sandbox until live gateway keys (`CMI`, `Stripe`, `PayPal`) are configured in `.env.local`.
+
+
+## Deploy to Render (Persistent Storage)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hhvxvvf1-jpg/marhaba)
+
+The root `render.yaml` provisions a Docker web service in Frankfurt with a persistent disk mounted at `/app/data`. SQLite, the generated session secret, private KYC uploads, public listing uploads, and backups are stored under this mount so they survive restarts and deploys. The Blueprint uses Render's paid Starter service plan because persistent disks are not available on free web services. Review the plan and disk charge before approving deployment.
+
+After deploying the Blueprint, Render builds the Dockerfile and provides the public `.onrender.com` address. The GitHub Actions workflow runs tests, TypeScript checks, and a production build on pushes to `main`.
