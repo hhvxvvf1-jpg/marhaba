@@ -17,6 +17,27 @@ if not all([API_URL, API_KEY, DASH_USERNAME, DASH_PASSWORD]):
     raise RuntimeError("Set MARHABA_DASHBOARD_API_URL, MARHABA_DASHBOARD_API_KEY, DASH_USERNAME and DASH_PASSWORD.")
 
 app = Dash(__name__, title="MARHABA Control Center", update_title="Refreshing…")
+app.index_string = """<!DOCTYPE html>
+<html>
+<head>
+{%metas%}
+<title>{%title%}</title>
+{%favicon%}
+{%css%}
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#f4f6fb;font-family:Inter,ui-sans-serif,system-ui,Arial,sans-serif}
+.app-shell{min-height:100vh}.topbar{height:76px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #25304a;background:#10182b;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;letter-spacing:.22em;color:#dfbf7a;font-size:19px}.brand-sub{font-size:10px;letter-spacing:.24em;color:#9aa7bd;margin-top:4px}.last-updated{font-size:12px;color:#9aa7bd}
+.main{max-width:1440px;margin:auto;padding:32px 5vw}.connection-state{padding:12px 16px;border:1px solid #374151;border-radius:12px;margin-bottom:22px;font-size:13px}.online{color:#86efac;background:#052e20;border-color:#166534}.offline{color:#fca5a5;background:#450a0a;border-color:#991b1b}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:20px}.metric-card,.panel{background:#151d32;border:1px solid #283550;border-radius:16px;padding:20px;box-shadow:0 8px 30px #0002}.metric-label{font-size:10px;letter-spacing:.16em;color:#9aa7bd;font-weight:700}.metric-value{display:inline-block;font-size:26px;font-weight:800;margin-top:10px}.metric-suffix{font-size:11px;color:#dfbf7a;margin-left:5px}.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel h2{font-size:15px;letter-spacing:.04em;margin:0 0 12px}.footer,.empty-state{color:#9aa7bd;font-size:12px;padding:20px 2px}.footer{text-align:center;margin-top:24px}
+@media(max-width:760px){.content-grid{grid-template-columns:1fr}.main{padding:22px 16px}.topbar{padding:0 16px}.metric-value{font-size:22px}}
+</style>
+</head>
+<body>
+{%app_entry%}
+<footer>{%config%}{%scripts%}{%renderer%}</footer>
+</body>
+</html>"""
 server = app.server
 dash_auth.BasicAuth(app, {DASH_USERNAME: DASH_PASSWORD})
 
