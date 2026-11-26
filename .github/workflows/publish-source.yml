@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Expand the clean application archive
+      - name: Expand and prepare the clean application archive
         shell: bash
         run: |
           set -euo pipefail
@@ -62,6 +62,7 @@ jobs:
             --exclude="*.db-shm" \
             --exclude="*.db-wal" \
             --exclude=".session-secret" \
+            --exclude="tsconfig.tsbuildinfo" \
             "$app_dir/" "$GITHUB_WORKSPACE/"
 
           rm -f "$archive" \
@@ -69,10 +70,52 @@ jobs:
             "$GITHUB_WORKSPACE/Publish-MARHABA.bat" \
             "$GITHUB_WORKSPACE/00-START-HERE.txt"
 
-          mkdir -p "$GITHUB_WORKSPACE/data"
-          if ! grep -q '^tsconfig\.tsbuildinfo$' "$GITHUB_WORKSPACE/.gitignore"; then
-            printf '\ntsconfig.tsbuildinfo\n' >> "$GITHUB_WORKSPACE/.gitignore"
-          fi
+          # Make Next.js use Render's injected PORT while keeping local Docker on 3000.
+          node <<'NODE'
+          const fs = require("node:fs");
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          pkg.scripts = pkg.scripts || {};
+          pkg.scripts.start = "next start -H 0.0.0.0 -p ${PORT:-3000}";
+          fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+
+          const dockerPath = "Dockerfile";
+          if (fs.existsSync(dockerPath)) {
+            let docker = fs.readFileSync(dockerPath, "utf8");
+            docker = docker.replace("ENV PORT=3000", "ENV PORT=10000");
+            docker = docker.replace(
+              "http://127.0.0.1:3000/api/v1/health",
+              "http://127.0.0.1:${PORT:-10000}/api/v1/health"
+            );
+            docker = docker.replace(
+              'CMD ["npm", "run", "start"]',
+              'CMD ["sh", "-c", "mkdir -p /app/data/uploads /app/data/backups /app/data/private-uploads && rm -rf /app/public/uploads/marhaba && ln -s /app/data/uploads /app/public/uploads/marhaba && rm -rf /app/backups && ln -s /app/data/backups /app/backups && exec npm run start"]'
+            );
+            fs.writeFileSync(dockerPath, docker);
+          }
+
+          // Keep local docker-compose usable on http://localhost:3000.
+          const composePath = "docker-compose.yml";
+          if (fs.existsSync(composePath)) {
+            let compose = fs.readFileSync(composePath, "utf8");
+            if (!compose.includes("PORT:")) {
+              compose = compose.replace(
+                "      NODE_ENV: production",
+                '      NODE_ENV: production\n      PORT: "3000"\n      MARHABA_BACKUP_DIR: /app/data/backups'
+              );
+            }
+            compose = compose.replace(/\n      - marhaba_uploads:\/app\/public\/uploads\/marhaba/g, "");
+            compose = compose.replace(/\n      - \.\/backups:\/app\/backups/g, "");
+            compose = compose.replace(/\n  marhaba_uploads:\n/g, "\n");
+            fs.writeFileSync(composePath, compose);
+          }
+
+          fs.mkdirSync("data", { recursive: true });
+          let ignore = fs.readFileSync(".gitignore", "utf8");
+          if (!ignore.split(/\r?\n/).includes("tsconfig.tsbuildinfo")) {
+            ignore += "\ntsconfig.tsbuildinfo\n";
+          }
+          fs.writeFileSync(".gitignore", ignore);
+          NODE
 
       - name: Publish application source to main
         shell: bash
