@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: marhaba
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    numInstances: 1
+    disk:
+      name: marhaba-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: MARHABA_DB_PATH
+        value: /app/data/marhaba.db
+      - key: MARHABA_BACKUP_DIR
+        value: /app/data/backups
+      - key: MARHABA_SESSION_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
